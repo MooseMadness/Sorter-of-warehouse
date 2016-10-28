@@ -17,7 +17,9 @@ public class CellObjectScript : MonoBehaviour
     {
         moving = true;
         //по игровой механике объект "переходит" в клетку до того как завершится визуальный переход
+        currCell.cellObject = null;
         currCell = cell;
+        currCell.cellObject = this;
         while(cell.transform.position != transform.position - offset)
         {
             float deltaSpeed = moveSpeed * Time.deltaTime;

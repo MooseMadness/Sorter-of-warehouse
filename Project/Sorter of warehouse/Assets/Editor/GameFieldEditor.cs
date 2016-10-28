@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
+//Класс реализующий итерфейс редактора для компонента GameFieldScript
 [CustomEditor(typeof(GameFieldScript))]
 public class GameFieldEditor : Editor
 {
