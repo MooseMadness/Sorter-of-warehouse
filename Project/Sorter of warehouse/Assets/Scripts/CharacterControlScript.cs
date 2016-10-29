@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 //Класс реализующий управление персонажем
 public class CharacterControlScript : CellObjectScript
@@ -14,8 +15,7 @@ public class CharacterControlScript : CellObjectScript
     private enum MoveType
     {
         Jump,
-        MoveLeft,
-        MoveRight,
+        Move,
         Fall,
         Stay
     }
@@ -24,6 +24,9 @@ public class CharacterControlScript : CellObjectScript
     private MoveType currMove = MoveType.Stay;
     //движение которое будет выполнено после завершения текущего
     private MoveType nextMove = MoveType.Stay;
+    //клетка в которую будет выполнен переход после завершения текущего
+    //(при условии что nextMove == MoveType.Move)
+    private CellScript nextTarget;
 
     private void Update()
     {
@@ -55,24 +58,13 @@ public class CharacterControlScript : CellObjectScript
                         break;
                     }
 
-                    case MoveType.MoveLeft:
+                    case MoveType.Move:
                     {
                         //игрок не может толкать ящики в прыжке
-                        if (currCell.leftNeighbor.cellObject == null)
+                        if (nextTarget.cellObject == null)
                         {
-                            StartCoroutine(MoveToCell(currCell.leftNeighbor, moveSpeed));
-                            currMove = MoveType.MoveLeft;
-                        }
-                        break;
-                    }
-
-                    case MoveType.MoveRight:
-                    {
-                        //игрок не может толкать ящики в прыжке
-                        if (currCell.rightNeighbor.cellObject == null)
-                        {
-                            StartCoroutine(MoveToCell(currCell.rightNeighbor, moveSpeed));
-                            currMove = MoveType.MoveRight;
+                            StartCoroutine(MoveToCell(nextTarget, moveSpeed));
+                            currMove = MoveType.Move;
                         }
                         break;
                     }
@@ -102,15 +94,29 @@ public class CharacterControlScript : CellObjectScript
         }
     }
 
-    //движение влево
-    public void MoveLeft()
+    //команда движения игрока в указаном направлении
+    //dir - направление движения
+    public void Move(MoveDirection dir)
     {
+        CellScript targetCell;
+        MoveDirection targetDir;
+        if(dir == MoveDirection.Left)
+        {
+            targetCell = currCell.leftNeighbor;
+            targetDir = MoveDirection.Left;
+        }
+        else
+        {
+            targetCell = currCell.rightNeighbor;
+            targetDir = MoveDirection.Right;
+        }
         if (moving)
         {
             //если во время прыжка поступит команда движение влево, то игрок сместится влево после прыжка
-            if (currMove == MoveType.Jump && currCell.leftNeighbor != null)
+            if (currMove == MoveType.Jump && targetCell != null)
             {
-                nextMove = MoveType.MoveLeft;
+                nextMove = MoveType.Move;
+                nextTarget = targetCell;
             }
             //если во время движения поступила команда прыжка а затем команда движения, то прыжок отменится 
             else if (nextMove == MoveType.Jump)
@@ -118,22 +124,22 @@ public class CharacterControlScript : CellObjectScript
                 nextMove = MoveType.Stay;
             }
         }
-        else if (currCell.leftNeighbor != null)
+        else if (targetCell != null)
         {
-            if (currCell.leftNeighbor.cellObject == null)
+            if (targetCell.cellObject == null)
             {
-                StartCoroutine(MoveToCell(currCell.leftNeighbor, moveSpeed));
-                currMove = MoveType.MoveLeft;
+                StartCoroutine(MoveToCell(targetCell, moveSpeed));
+                currMove = MoveType.Move;
             }
             else //попытка толкнуть ящик влево
             {
-                BoxScript box = currCell.leftNeighbor.cellObject as BoxScript;
-                if(box != null)
+                BoxScript box = targetCell.cellObject as BoxScript;
+                if (box != null)
                 {
-                    if(box.TryPush(BoxScript.PushDirection.Left, moveSpeed))
+                    if (box.TryPush(targetDir, moveSpeed))
                     {
-                        StartCoroutine(MoveToCell(currCell.leftNeighbor, moveSpeed));
-                        currMove = MoveType.MoveLeft;
+                        StartCoroutine(MoveToCell(targetCell, moveSpeed));
+                        currMove = MoveType.Move;
                     }
                 }
                 else
@@ -144,46 +150,18 @@ public class CharacterControlScript : CellObjectScript
         }
     }
 
-    //движение вправо
-    public void MoveRight()
+    //нужен в случаях когда вызывающий скрипт не может передать направление движения
+    //например UnityEngine.UI.Button при событии OnClick
+    public void MoveRght()
     {
-        if(moving)
-        {
-            //если во время прыжка поступит команда движение вправо, то игрок сместится вправо после прыжка
-            if (currMove == MoveType.Jump && currCell.rightNeighbor != null)
-            {
-                nextMove = MoveType.MoveRight;
-            }
-            //если во время движения поступила команда прыжка а затем команда движения, то прыжок отменится 
-            else if (nextMove == MoveType.Jump)
-            {
-                nextMove = MoveType.Stay;
-            }
-        }
-        else if(currCell.rightNeighbor != null)
-        {
-            if (currCell.rightNeighbor.cellObject == null)
-            {
-                StartCoroutine(MoveToCell(currCell.rightNeighbor, moveSpeed));
-                currMove = MoveType.MoveRight;
-            }
-            else //попытка толкнуть ящик вправо
-            {
-                BoxScript box = currCell.rightNeighbor.cellObject as BoxScript;
-                if(box != null)
-                {
-                    if(box.TryPush(BoxScript.PushDirection.Right, moveSpeed))
-                    {
-                        StartCoroutine(MoveToCell(currCell.rightNeighbor, moveSpeed));
-                        currMove = MoveType.MoveRight;
-                    }
-                }
-                else
-                {
-                    throw new UnityException("Непредвиденный тип объекта в клетке"); 
-                }
-            }
-        }
+        Move(MoveDirection.Right);
+    }
+
+    //нужен в случаях когда вызывающий скрипт не может передать направление движения
+    //например UnityEngine.UI.Button при событии OnClick
+    public void MoveLeft()
+    {
+        Move(MoveDirection.Left);
     }
 
     //в будующем здесь будет происходить переключение анимаций

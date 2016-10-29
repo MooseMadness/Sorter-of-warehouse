@@ -67,6 +67,7 @@
     <Compile Include="Assets\Scripts\CellObjectScript.cs" />
     <Compile Include="Assets\Scripts\CellScript.cs" />
     <Compile Include="Assets\Scripts\CharacterControlScript.cs" />
+    <Compile Include="Assets\Scripts\EnumsScript.cs" />
     <Compile Include="Assets\Scripts\GameFieldScript.cs" />
     <Compile Include="Assets\Scripts\GameManagerScript.cs" />
   </ItemGroup>

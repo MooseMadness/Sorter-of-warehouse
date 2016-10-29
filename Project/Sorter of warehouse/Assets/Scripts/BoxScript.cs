@@ -15,13 +15,6 @@ public class BoxScript : CellObjectScript
         Yellow
     }
 
-    //возможные направления для толкания яшика
-    public enum PushDirection
-    {
-        Left,
-        Right
-    }
-
     //возможные типы движения ящика
     private enum BoxMoveType
     {
@@ -49,7 +42,7 @@ public class BoxScript : CellObjectScript
     //dir - направление толчка
     //moveSpeed - скорость толкания
     //возвращает true если толкнуть получилось иначе false
-    public bool TryPush(PushDirection dir, float moveSpeed)
+    public bool TryPush(MoveDirection dir, float moveSpeed)
     {
         if (moving)
         {
@@ -57,7 +50,7 @@ public class BoxScript : CellObjectScript
         }
         else
         {
-            if (dir == PushDirection.Left)
+            if (dir == MoveDirection.Left)
             {
                 //если слева и сверху нет ящика толчок разрешается
                 if (currCell.leftNeighbor != null && currCell.leftNeighbor.cellObject == null && currCell.topNeighbor.cellObject == null)
