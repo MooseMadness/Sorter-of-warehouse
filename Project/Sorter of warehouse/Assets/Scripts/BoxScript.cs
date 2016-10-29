@@ -84,7 +84,7 @@ public class BoxScript : CellObjectScript
     private void Update()
     {
         //падение если под ящиком ничего нет
-        if(canFall && !moving && currCell.bottomNeighbor != null && currCell.bottomNeighbor.cellObject == null)
+        if(canFall && !moving && currCell.bottomNeighbor != null && !(currCell.bottomNeighbor.cellObject is BoxScript))
         {
             StartCoroutine(MoveToCell(currCell.bottomNeighbor, fallSpeed));
             currMove = BoxMoveType.Fall;
@@ -108,13 +108,16 @@ public class BoxScript : CellObjectScript
             return;
         }
         currMove = BoxMoveType.Stay;
-        int count = 0;
-        //подсчёт ящиков с одинаковым цветом
-        FindBoxWithSameColor(currCell, (x) => count++);
-        if(count >= 3)
+        if (currCell.bottomNeighbor == null || currCell.bottomNeighbor.cellObject is BoxScript)
         {
-            //уничтожение ящиков с одинаковым цветом
-            FindBoxWithSameColor(currCell, (x) => x.DestroyBox());
+            int count = 0;
+            //подсчёт ящиков с одинаковым цветом
+            FindBoxWithSameColor(currCell, (x) => count++);
+            if (count >= 3)
+            {
+                //уничтожение ящиков с одинаковым цветом
+                FindBoxWithSameColor(currCell, (x) => x.DestroyBox());
+            }
         }
     }
 
