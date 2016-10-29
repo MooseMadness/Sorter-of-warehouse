@@ -19,7 +19,7 @@ public class GameManagerScript : MonoBehaviour
     //вызывается когда игрок проиграл
     public void GameOver()
     {
-
+        Debug.Log("GAME OVER!!!");
     }   
     
     //изменяет счет на величину указанную в amount

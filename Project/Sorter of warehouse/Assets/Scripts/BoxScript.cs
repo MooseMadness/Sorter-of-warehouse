@@ -39,6 +39,8 @@ public class BoxScript : CellObjectScript
     public float fallSpeed;
     //кол-во очков которое даётся за ящик
     public int boxScore;
+    //тег которым отмечен игрок
+    public string playerTag = "Player";
 
     //текущее движение ящика
     private BoxMoveType currMove = BoxMoveType.Stay;
@@ -106,11 +108,19 @@ public class BoxScript : CellObjectScript
 
     protected override void EndMoveAction()
     {
+        //конец игры если ящик упал в запретную клетку
+        if(currMove == BoxMoveType.Fall && currCell.isGameOverCell && currCell.bottomNeighbor.cellObject is BoxScript)
+        {
+            GameManagerScript.instance.GameOver();
+            return;
+        }
         currMove = BoxMoveType.Stay;
         int count = 0;
+        //подсчёт ящиков с одинаковым цветом
         FindBoxWithSameColor(currCell, (x) => count++);
         if(count >= 3)
         {
+            //уничтожение ящиков с одинаковым цветом
             FindBoxWithSameColor(currCell, (x) => x.DestroyBox());
         }
     }
@@ -182,6 +192,15 @@ public class BoxScript : CellObjectScript
             {
                 FindBoxWithSameColor(cell.rightNeighbor, action, cell);
             }
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D coll)
+    {
+        //игра заканчивается если игрок соприкосается с падающим ящиком
+        if(coll.tag == playerTag && currMove == BoxMoveType.Fall)
+        {
+            GameManagerScript.instance.GameOver();
         }
     }
 }
