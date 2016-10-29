@@ -13,7 +13,9 @@ public class CellObjectScript : MonoBehaviour
     protected bool moving { get; private set; }
 
     //корутина перемещающая объект в другую клетку
-    public IEnumerator MoveToCell(CellScript cell, float moveSpeed)
+    //cell - клетка в которую будет производится перемещение
+    //moveSpeed - скорость перемещения
+    protected IEnumerator MoveToCell(CellScript cell, float moveSpeed)
     {
         if (moveSpeed <= 0)
         {

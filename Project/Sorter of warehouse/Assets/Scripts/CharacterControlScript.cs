@@ -57,6 +57,7 @@ public class CharacterControlScript : CellObjectScript
 
                     case MoveType.MoveLeft:
                     {
+                        //игрок не может толкать ящики в прыжке
                         if (currCell.leftNeighbor.cellObject == null)
                         {
                             StartCoroutine(MoveToCell(currCell.leftNeighbor, moveSpeed));
@@ -67,6 +68,7 @@ public class CharacterControlScript : CellObjectScript
 
                     case MoveType.MoveRight:
                     {
+                        //игрок не может толкать ящики в прыжке
                         if (currCell.rightNeighbor.cellObject == null)
                         {
                             StartCoroutine(MoveToCell(currCell.rightNeighbor, moveSpeed));
@@ -116,10 +118,29 @@ public class CharacterControlScript : CellObjectScript
                 nextMove = MoveType.Stay;
             }
         }
-        else if (currCell.leftNeighbor != null && currCell.leftNeighbor.cellObject == null)
+        else if (currCell.leftNeighbor != null)
         {
-            StartCoroutine(MoveToCell(currCell.leftNeighbor, moveSpeed));
-            currMove = MoveType.MoveLeft;
+            if (currCell.leftNeighbor.cellObject == null)
+            {
+                StartCoroutine(MoveToCell(currCell.leftNeighbor, moveSpeed));
+                currMove = MoveType.MoveLeft;
+            }
+            else //попытка толкнуть ящик влево
+            {
+                BoxScript box = currCell.leftNeighbor.cellObject as BoxScript;
+                if(box != null)
+                {
+                    if(box.TryPush(BoxScript.PushDirection.Left, moveSpeed))
+                    {
+                        StartCoroutine(MoveToCell(currCell.leftNeighbor, moveSpeed));
+                        currMove = MoveType.MoveLeft;
+                    }
+                }
+                else
+                {
+                    throw new UnityException("Непредвиденный тип объекта в клетке");
+                }
+            }
         }
     }
 
@@ -139,16 +160,35 @@ public class CharacterControlScript : CellObjectScript
                 nextMove = MoveType.Stay;
             }
         }
-        else if(currCell.rightNeighbor != null && currCell.rightNeighbor.cellObject == null)
+        else if(currCell.rightNeighbor != null)
         {
-            StartCoroutine(MoveToCell(currCell.rightNeighbor, moveSpeed));
-            currMove = MoveType.MoveRight;
+            if (currCell.rightNeighbor.cellObject == null)
+            {
+                StartCoroutine(MoveToCell(currCell.rightNeighbor, moveSpeed));
+                currMove = MoveType.MoveRight;
+            }
+            else //попытка толкнуть ящик вправо
+            {
+                BoxScript box = currCell.rightNeighbor.cellObject as BoxScript;
+                if(box != null)
+                {
+                    if(box.TryPush(BoxScript.PushDirection.Right, moveSpeed))
+                    {
+                        StartCoroutine(MoveToCell(currCell.rightNeighbor, moveSpeed));
+                        currMove = MoveType.MoveRight;
+                    }
+                }
+                else
+                {
+                    throw new UnityException("Непредвиденный тип объекта в клетке"); 
+                }
+            }
         }
     }
 
     //в будующем здесь будет происходить переключение анимаций
     protected override void EndMoveAction()
     {
-        
+        currMove = MoveType.Stay;
     }
 }
