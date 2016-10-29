@@ -42,6 +42,7 @@ public class CharacterControlScript : CellObjectScript
             }
             else
             {
+                //выбор следующего движения если во время предыдущего была нажата кнопка
                 switch (nextMove)
                 {
                     case MoveType.Jump:
@@ -79,6 +80,7 @@ public class CharacterControlScript : CellObjectScript
         }
     }
 
+    //прыжок игрока
     public void Jump()
     {
         if (!currCell.isGameOverCell)
@@ -91,21 +93,24 @@ public class CharacterControlScript : CellObjectScript
                     currMove = MoveType.Jump;
                 }
             }
-            else if(currMove != MoveType.Fall)
+            else if(currMove != MoveType.Fall) //если "прыгнуть" во время движения, то игрок прыгнет после завершения движения
             {
                 nextMove = MoveType.Jump;
             }
         }
     }
 
+    //движение влево
     public void MoveLeft()
     {
         if (moving)
         {
+            //если во время прыжка поступит команда движение влево, то игрок сместится влево после прыжка
             if (currMove == MoveType.Jump && currCell.leftNeighbor != null)
             {
                 nextMove = MoveType.MoveLeft;
             }
+            //если во время движения поступила команда прыжка а затем команда движения, то прыжок отменится 
             else if (nextMove == MoveType.Jump)
             {
                 nextMove = MoveType.Stay;
@@ -118,15 +123,18 @@ public class CharacterControlScript : CellObjectScript
         }
     }
 
+    //движение вправо
     public void MoveRight()
     {
         if(moving)
         {
-            if(currMove == MoveType.Jump && currCell.rightNeighbor != null)
+            //если во время прыжка поступит команда движение вправо, то игрок сместится вправо после прыжка
+            if (currMove == MoveType.Jump && currCell.rightNeighbor != null)
             {
                 nextMove = MoveType.MoveRight;
             }
-            else if(nextMove == MoveType.Jump)
+            //если во время движения поступила команда прыжка а затем команда движения, то прыжок отменится 
+            else if (nextMove == MoveType.Jump)
             {
                 nextMove = MoveType.Stay;
             }
@@ -138,6 +146,7 @@ public class CharacterControlScript : CellObjectScript
         }
     }
 
+    //в будующем здесь будет происходить переключение анимаций
     protected override void EndMoveAction()
     {
         

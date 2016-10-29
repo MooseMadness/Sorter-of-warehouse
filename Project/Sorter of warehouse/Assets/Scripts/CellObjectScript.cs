@@ -15,6 +15,10 @@ public class CellObjectScript : MonoBehaviour
     //корутина перемещающая объект в другую клетку
     public IEnumerator MoveToCell(CellScript cell, float moveSpeed)
     {
+        if (moveSpeed <= 0)
+        {
+            throw new UnityException("Скорость не может быть меньшей либо равной 0 (moveSpeed = " + moveSpeed + ")");
+        }
         moving = true;
         //по игровой механике объект "переходит" в клетку до того как завершится визуальный переход
         currCell.cellObject = null;
