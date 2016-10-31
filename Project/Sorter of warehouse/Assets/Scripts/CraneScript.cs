@@ -60,14 +60,19 @@ public class CraneScript : CellObjectScript
     protected override void EndMoveAction()
     {
         count++;
-        //сброс ящика
         if (count == cellCount)
         {
-            box.currCell = currCell;
-            currCell.cellObject = box;
-            box.canFall = true;
-            box = null;
+            DropBox();
         }
+    }
+
+    //сброс ящика
+    private void DropBox()
+    {
+        box.currCell = currCell;
+        currCell.cellObject = box;
+        box.canFall = true;
+        box = null;
     }
 
     //функция начинающее уничтожение крана
