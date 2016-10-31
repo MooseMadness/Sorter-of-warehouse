@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 //Касс реализующий механику ящика:
 //- толкание и падение
@@ -108,6 +109,7 @@ public class BoxScript : CellObjectScript
             return;
         }
         currMove = BoxMoveType.Stay;
+        //проверка на совпадение цветов проводится если падение не будет прододжаться
         if (currCell.bottomNeighbor == null || currCell.bottomNeighbor.cellObject is BoxScript)
         {
             int count = 0;
@@ -128,6 +130,7 @@ public class BoxScript : CellObjectScript
     //- цвет не совпадает 
     //- в клетке нет ящика
     //- клетки нет (cell равен null)
+    //цвет сравнивается с цветом ящика для которого вызван метод
     private bool CompareColor(CellScript cell)
     {
         if(cell == null)
@@ -158,37 +161,52 @@ public class BoxScript : CellObjectScript
     //ищет, среди соседей ящика, ящики с таким же цветом и выполняет для них действие
     //cell - клетка в которой содержится текущий ящик
     //action - делегат, который будет вызван для каждого найденого ящика (включая исходный)
-    //startCell - аргумент используемый для избежания зацикливания при рекурсии (когда 2 соседние клетки будут вызывать метод друг для друга по очереди)
-    //в нём передаётся ссылка на клетку, которая вызвала данный метод
-    //для этой клетки метод не будет вызываться повторно
-    //другие виды зацикливания при рекурсии невозможны исходя из механики игры
-    private void FindBoxWithSameColor(CellScript cell, Action<BoxScript> action, CellScript startCell = null)
+    //passedCells - список уже проверенных клеток. используется для избежания зацикливания    
+    private void FindBoxWithSameColor(CellScript cell, Action<BoxScript> action, List<CellScript> passedCells = null)
     {
         BoxScript box = cell.cellObject as BoxScript;
         if (box == null)
         {
-            throw new UnityException("Попытка искать ящики с одинаковым цветом для клетки без ящика");
+            throw new UnityException("Попытка найти ящики с одинаковы цветом для клетки без ящика");
         }
         else
         {
+            if (passedCells == null)
+            {
+                passedCells = new List<CellScript>();
+            }
+            passedCells.Add(cell);
+            if (CheckCell(cell.leftNeighbor, passedCells))
+                FindBoxWithSameColor(cell.leftNeighbor, action, passedCells);
+            if (CheckCell(cell.rightNeighbor, passedCells))
+                FindBoxWithSameColor(cell.rightNeighbor, action, passedCells);
+            if (CheckCell(cell.topNeighbor, passedCells))
+                FindBoxWithSameColor(cell.topNeighbor, action, passedCells);
+            if (CheckCell(cell.bottomNeighbor, passedCells))
+                FindBoxWithSameColor(cell.bottomNeighbor, action, passedCells);
             action(box);
-            if (cell.bottomNeighbor != startCell && CompareColor(cell.bottomNeighbor))
-            {
-                FindBoxWithSameColor(cell.bottomNeighbor, action, cell);
-            }
-            if (cell.topNeighbor != startCell && CompareColor(cell.topNeighbor))
-            {
-                FindBoxWithSameColor(cell.topNeighbor, action, cell);
-            }
-            if (cell.leftNeighbor != startCell && CompareColor(cell.leftNeighbor))
-            {
-                FindBoxWithSameColor(cell.leftNeighbor, action, cell);
-            }
-            if (cell.rightNeighbor != startCell && CompareColor(cell.rightNeighbor))
-            {
-                FindBoxWithSameColor(cell.rightNeighbor, action, cell);
-            }
         }
+    }
+
+    //проверка клетки на совпадение по цвету и на принадлежность к пройденным клеткам
+    //cell - клетка на проверку
+    //passedCells - массив пройденных клеток
+    //если клетка не пройденна и подходит по цвету возвращает true
+    //иначе возвращает false    
+    private bool CheckCell(CellScript cell, List<CellScript> passedCells)
+    {
+        if(CompareColor(cell))
+        {
+            foreach(CellScript passedCell in passedCells)
+            {
+                if(passedCell == cell)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     private void OnTriggerEnter2D(Collider2D coll)
