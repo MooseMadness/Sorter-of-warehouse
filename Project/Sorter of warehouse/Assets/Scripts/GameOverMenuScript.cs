@@ -15,6 +15,8 @@ public class GameOverMenuScript : MonoBehaviour
     public InputField highscoreNameIF;
     //ссылка на текст с кол-вом набранных очков
     public Text scoreText;
+    //название сцены с главным меню
+    public string mainMenuSceneName = "MainMenuScene";
 
     //отображает меню конца игры
     public void ShowMenu()
@@ -34,6 +36,7 @@ public class GameOverMenuScript : MonoBehaviour
     //кнопка перехода в главное меню
     public void OnMainMenuClick()
     {
-
+        Time.timeScale = 1;
+        SceneManager.LoadScene(mainMenuSceneName);
     }
 }
