@@ -29,7 +29,8 @@ public class GameManagerScript : MonoBehaviour
     public int gameFieldWidth;
 
     //текущее кол-во очков
-    private int score;
+    public int score { get; private set; }
+
     //таймер используемый для отсчета времени между спавнами кранов
     private float craneTimer = 0;
     //ссылка на компонент отвечающий за меню конца игры

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 //Класс отвечающий за меню появляющееся после окончания игры
 public class GameOverMenuScript : MonoBehaviour
@@ -18,18 +19,32 @@ public class GameOverMenuScript : MonoBehaviour
     //название сцены с главным меню
     public string mainMenuSceneName = "MainMenuScene";
 
+    //максимальное кол-во рекордов
+    private const int maxHighscoresCount = 10;
+    //true если текущий счет рекорд
+    //иначе false
+    private bool isHighscore;
+
     //отображает меню конца игры
     public void ShowMenu()
     {
         gameMenuRoot.SetActive(false);
         gameOverMenuRoot.SetActive(true);
         scoreText.text = GameManagerScript.instance.scoreText.text;
+        CheckHighscore();
+        if (isHighscore)
+        {
+            newHighscoreRoot.SetActive(true);
+            highscoreNameIF.text = MainMenuScript.defaultHighscoreName;
+        }
     }
 
     //кнопка новой игры
     public void OnNewGameClick()
     {
         Time.timeScale = 1;
+        if(isHighscore)
+            SaveScore();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
@@ -37,6 +52,36 @@ public class GameOverMenuScript : MonoBehaviour
     public void OnMainMenuClick()
     {
         Time.timeScale = 1;
+        if(isHighscore)
+            SaveScore();
         SceneManager.LoadScene(mainMenuSceneName);
+    }
+
+    //сохраняет текущий рекорд
+    private void SaveScore()
+    {
+        if(MainMenuScript.highscores.Count == maxHighscoresCount)
+        {
+            MainMenuScript.highscores.RemoveAt(MainMenuScript.highscores.Count - 1);
+        }
+        MainMenuScript.highscores.Add(new HighscoreRecord(highscoreNameIF.text, GameManagerScript.instance.score));
+        MainMenuScript.highscores = MainMenuScript.highscores.OrderByDescending(x => x.score).ToList();
+        MainMenuScript.defaultHighscoreName = highscoreNameIF.text;
+    }
+
+    //проверяет является ли текущее кол-во очков рекордом
+    private void CheckHighscore()
+    {
+        if(MainMenuScript.highscores.Count == maxHighscoresCount)
+        {
+            if (GameManagerScript.instance.score > MainMenuScript.highscores[maxHighscoresCount - 1].score)
+                isHighscore = true;
+            else
+                isHighscore = false;
+        }
+        else
+        {
+            isHighscore = true;
+        }
     }
 }
