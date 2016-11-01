@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 //Класс управляющий игрой
 //в сцене может существовать только один экземпляр данного класса
+[RequireComponent(typeof(GameOverMenuScript))]
 public class GameManagerScript : MonoBehaviour
 {
     //ссылка на объект данного класса в сцене 
@@ -31,6 +32,8 @@ public class GameManagerScript : MonoBehaviour
     private int score;
     //таймер используемый для отсчета времени между спавнами кранов
     private float craneTimer = 0;
+    //ссылка на компонент отвечающий за меню конца игры
+    private GameOverMenuScript gameOverMenuScript;
 
     private void Awake()
     {
@@ -54,6 +57,7 @@ public class GameManagerScript : MonoBehaviour
         {
             throw new UnityException("Ширина игрового поля должна быть больше 0");
         }
+        gameOverMenuScript = GetComponent<GameOverMenuScript>();
     }
 
     //проверяет на наличие у префабов необходимых компонентов
@@ -76,7 +80,9 @@ public class GameManagerScript : MonoBehaviour
     //вызывается когда игрок проиграл
     public void GameOver()
     {
-        SceneManager.LoadScene(0);
+        gameOverMenuScript.ShowMenu();
+        Time.timeScale = 0;
+        enabled = false;
     }   
     
     //изменяет счет на величину указанную в amount
