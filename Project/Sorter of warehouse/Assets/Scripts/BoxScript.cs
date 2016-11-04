@@ -35,6 +35,8 @@ public class BoxScript : CellObjectScript
     public int boxScore;
     //тег которым отмечен игрок
     public string playerTag = "Player";
+    //бонус, который содержит ящик
+    public IBonus bonus = null;
 
     //текущее движение ящика
     private BoxMoveType currMove = BoxMoveType.Stay;
@@ -95,6 +97,8 @@ public class BoxScript : CellObjectScript
     //вызывается для уничтожения ящика
     public void DestroyBox()
     {
+        if (bonus != null)
+            bonus.UseBonus(currCell);
         currCell.cellObject = null;
         GameManagerScript.instance.ChangeScore(boxScore);
         Destroy(gameObject);
