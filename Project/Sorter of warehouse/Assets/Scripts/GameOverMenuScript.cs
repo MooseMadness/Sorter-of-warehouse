@@ -23,13 +23,22 @@ public class GameOverMenuScript : MonoBehaviour
     private const int maxHighscoresCount = 10;
     //true если текущий счет рекорд
     //иначе false
-    private bool isHighscore;
+    private bool isHighscore = false;
+    //ссылка на скрипт паузы
+    private PauseScript pauseScript;
+
+    private void Awake()
+    {
+        pauseScript = GetComponent<PauseScript>();
+    }
 
     //отображает меню конца игры
     public void ShowMenu()
     {
         gameMenuRoot.SetActive(false);
         gameOverMenuRoot.SetActive(true);
+        if (pauseScript != null)
+            pauseScript.enabled = false;
         scoreText.text = GameManagerScript.instance.scoreText.text;
         CheckHighscore();
         if (isHighscore)
