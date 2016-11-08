@@ -160,7 +160,7 @@ public class GameManagerScript : MonoBehaviour
         crane.box = box;
         box.bonus = SpawnBonus();
         if (box.bonus != null)
-            box.GetComponent<SpriteRenderer>().sprite = box.bonus.bonusGraphic;
+            box.InitBonusGraphic();
     }
 
     //спавн бонуса

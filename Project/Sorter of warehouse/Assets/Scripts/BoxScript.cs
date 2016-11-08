@@ -10,10 +10,11 @@ public class BoxScript : CellObjectScript
     //перечесление возможных цветов ящика
     public enum BoxColor
     {
-        Red,
-        White,
-        Black,
-        Yellow
+        ArrowBox,
+        HorizLineBox,
+        JustBox,
+        StorageBox,
+        VertLineBox
     }
 
     //возможные типы движения ящика
@@ -227,4 +228,22 @@ public class BoxScript : CellObjectScript
             GameManagerScript.instance.GameOver();
         }
     }
+
+    //добавляет к ящику иконку бонуса
+    public void InitBonusGraphic()
+    {
+        if (bonus == null)
+        {
+            throw new UnityException("Попытка добавить графику бонуса к ящику без бонуса");
+        }
+        else
+        {
+            GameObject bonusGO = new GameObject(gameObject.name + "Bonus", typeof(SpriteRenderer));
+            bonusGO.transform.position = transform.position;
+            SpriteRenderer bonusRender = bonusGO.GetComponent<SpriteRenderer>();
+            bonusRender.sprite = bonus.bonusGraphic;
+            bonusRender.sortingOrder = 1;
+            bonusGO.transform.SetParent(transform);
+        }
+    } 
 }
