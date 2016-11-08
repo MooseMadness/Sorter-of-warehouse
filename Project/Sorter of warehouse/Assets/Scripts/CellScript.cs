@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 
 //Класс клетки на которые разбито игровое поле
+[System.Serializable]
 public class CellScript : MonoBehaviour
 {
     //истина если при попадании в ячейку ящика игра должна заканчиваться

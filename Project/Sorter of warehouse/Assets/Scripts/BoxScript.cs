@@ -36,10 +36,12 @@ public class BoxScript : CellObjectScript
     //тег которым отмечен игрок
     public string playerTag = "Player";
     //бонус, который содержит ящик
-    public IBonus bonus = null;
+    public BonusScript bonus = null;
 
     //текущее движение ящика
     private BoxMoveType currMove = BoxMoveType.Stay;
+    //истина если ящик уничтожен
+    private bool destroyed = false;
 
     //метод производящий попытку толкнуть ящик
     //dir - направление толчка
@@ -97,11 +99,15 @@ public class BoxScript : CellObjectScript
     //вызывается для уничтожения ящика
     public void DestroyBox()
     {
-        if (bonus != null)
-            bonus.UseBonus(currCell);
-        currCell.cellObject = null;
-        GameManagerScript.instance.ChangeScore(boxScore);
-        Destroy(gameObject);
+        if (!destroyed)
+        {
+            destroyed = true;
+            if (bonus != null)
+                bonus.UseBonus(currCell);
+            currCell.cellObject = null;
+            GameManagerScript.instance.ChangeScore(boxScore);
+            Destroy(gameObject);
+        }
     }
 
     protected override void EndMoveAction()

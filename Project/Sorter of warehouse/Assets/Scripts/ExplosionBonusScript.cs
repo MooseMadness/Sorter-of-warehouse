@@ -2,9 +2,9 @@
 
 //Класс реализующий бонус, который уничтожает все прилегающие,
 //к данному ящику, ящики
-public class ExplosionBonusScript : IBonus
+public class ExplosionBonusScript : BonusScript
 {
-    public void UseBonus(CellScript targetCell)
+    public override void UseBonus(CellScript targetCell)
     {
         if(targetCell.cellObject is BoxScript)
         {

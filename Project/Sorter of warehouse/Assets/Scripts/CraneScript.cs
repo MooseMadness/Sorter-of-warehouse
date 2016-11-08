@@ -14,19 +14,8 @@ public class CraneScript : CellObjectScript
     //кол-во проеханых клеток
     private int count = 0;
 
-    //ВРЕМЕНЫЙ КОД
-    private bool first = true;
-
     private void Update()
-    {
-        //ВРЕМЕНЫЙ КОД
-        if(first)
-        {
-            first = false;
-            StartMove();
-        }
-
-        
+    {        
         if (moving)
         {
             //перемещение ящика вместе с краном

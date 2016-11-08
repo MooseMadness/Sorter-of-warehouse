@@ -63,6 +63,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\BonusScript.cs" />
     <Compile Include="Assets\Scripts\BoxScript.cs" />
     <Compile Include="Assets\Scripts\CellObjectScript.cs" />
     <Compile Include="Assets\Scripts\CellScript.cs" />
@@ -73,7 +74,6 @@
     <Compile Include="Assets\Scripts\GameFieldScript.cs" />
     <Compile Include="Assets\Scripts\GameManagerScript.cs" />
     <Compile Include="Assets\Scripts\GameOverMenuScript.cs" />
-    <Compile Include="Assets\Scripts\IBonus.cs" />
     <Compile Include="Assets\Scripts\MainMenuScript.cs" />
     <Compile Include="Assets\Scripts\PauseScript.cs" />
     <Compile Include="Assets\Scripts\ScoreBonusScript.cs" />

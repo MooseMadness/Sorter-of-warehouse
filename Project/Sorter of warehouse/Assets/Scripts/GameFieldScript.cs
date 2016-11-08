@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 
 //Класс представляющий игровое поле
+[ExecuteInEditMode]
 public class GameFieldScript : MonoBehaviour
 {
     //Префаб клетки
@@ -10,8 +11,26 @@ public class GameFieldScript : MonoBehaviour
     //Кол-во вертикальных клеток
     public int height;
 
-    //Ссылка на игровое поле
-    public CellScript[,] cells { get; private set; }
+    //Массив клеток игрового поля
+    //используется 1-мерный массив т.к. Unity не поддерживает 
+    //сериализацию 2-мерных массивов
+    [SerializeField, HideInInspector]
+    private CellScript[] cells;
+
+    //индексатор позволяющий работать с 1-мерным массивом клеток
+    //как с 2-мерным
+    public CellScript this[int i, int j]
+    {
+        get
+        {
+            return cells[i * width + j];
+        }
+
+        private set
+        {
+            cells[i * width + j] = value;
+        }
+    }
 
     //Строит поле из клеток
     //Может вызываться в редакторе с помощью кнопки
@@ -29,7 +48,7 @@ public class GameFieldScript : MonoBehaviour
             }
             else
             {
-                cells = new CellScript[height, width];
+                cells = new CellScript[height * width];
                 float cellWidth = cellPrefab.GetComponent<CellScript>().width;
                 for (int i = 0; i < height; i++)
                 {
@@ -45,15 +64,15 @@ public class GameFieldScript : MonoBehaviour
                         cell.transform.SetParent(row.transform);
                         nextPos.x += cellWidth;
                         CellScript cellScript = cell.GetComponent<CellScript>();
-                        cells[i, j] = cellScript;
+                        this[i, j] = cellScript;
                         if (i != 0)
                         {
-                            cellScript.bottomNeighbor = cells[i - 1, j];
+                            cellScript.bottomNeighbor = this[i - 1, j];
                             cellScript.bottomNeighbor.topNeighbor = cellScript;
                         }
                         if (j != 0)
                         {
-                            cellScript.leftNeighbor = cells[i, j - 1];
+                            cellScript.leftNeighbor = this[i, j - 1];
                             cellScript.leftNeighbor.rightNeighbor = cellScript;
                         }
                     }

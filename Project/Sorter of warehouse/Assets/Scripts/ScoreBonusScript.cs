@@ -1,15 +1,10 @@
 ﻿//класс реализующий бонус, который добавляет очки при срабатывании
-public class ScoreBonusScript : IBonus
+public class ScoreBonusScript : BonusScript
 {
     //кол-во добавляемых очков
-    private int scoreAmount;
+    public int scoreAmount;
 
-    public ScoreBonusScript(int _scoreAmount)
-    {
-        scoreAmount = _scoreAmount;
-    }
-
-    public void UseBonus(CellScript targetCell)
+    public override void UseBonus(CellScript targetCell)
     {
         GameManagerScript.instance.ChangeScore(scoreAmount);
     }

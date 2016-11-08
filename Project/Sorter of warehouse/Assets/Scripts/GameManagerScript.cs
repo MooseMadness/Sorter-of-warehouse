@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 //Класс управляющий игрой
@@ -27,6 +26,8 @@ public class GameManagerScript : MonoBehaviour
     public float spawnTimeDecreaseSpeed;
     //ширина игрового поля (в клетках)
     public int gameFieldWidth;
+    //массив используеммых боннусов
+    public BonusScript[] bonuses;
 
     //текущее кол-во очков
     public int score { get; private set; }
@@ -59,6 +60,20 @@ public class GameManagerScript : MonoBehaviour
             throw new UnityException("Ширина игрового поля должна быть больше 0");
         }
         gameOverMenuScript = GetComponent<GameOverMenuScript>();
+    }
+
+    //создаёт необходимые объекты бонусов
+    private void CheckBonusesProbs()
+    {
+        float sumProb = 0;
+        foreach(BonusScript bonus in bonuses)
+        {
+            sumProb += bonus.bonusProbability;
+        }
+        if(sumProb > 1f)
+        {
+            throw new UnityException("Суммарная вероянтность появления бонуса не может быть больше 1");
+        }
     }
 
     //проверяет на наличие у префабов необходимых компонентов
@@ -143,5 +158,24 @@ public class GameManagerScript : MonoBehaviour
         //создание нужного ящика
         BoxScript box = ((GameObject)Instantiate(boxPrefabs[boxPrefabIndex], crane.transform.position, Quaternion.identity)).GetComponent<BoxScript>();
         crane.box = box;
+        box.bonus = SpawnBonus();
+        if (box.bonus != null)
+            box.GetComponent<SpriteRenderer>().sprite = box.bonus.bonusGraphic;
+    }
+
+    //спавн бонуса
+    //бонус может и не заспавниться
+    //в этом случае метод вернет null
+    private BonusScript SpawnBonus()
+    {
+        float randomNumber = Random.Range(0, 1f);
+        float bonusProb = 0f;
+        foreach(BonusScript bonus in bonuses)
+        {
+            bonusProb += bonus.bonusProbability;
+            if (randomNumber <= bonusProb)
+                return bonus;
+        }
+        return null;
     }
 }

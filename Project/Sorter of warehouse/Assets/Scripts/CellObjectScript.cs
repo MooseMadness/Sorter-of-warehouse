@@ -2,7 +2,7 @@
 using System.Collections;
 
 //Базовый класс для объектов которые могут перемещаться по клеткам
-public class CellObjectScript : MonoBehaviour
+public abstract class CellObjectScript : MonoBehaviour
 {
     //ссылка на клетку в которой находится объект
     public CellScript currCell;
@@ -47,7 +47,7 @@ public class CellObjectScript : MonoBehaviour
 
     //чтобы выполнить доп. действия полсе окончания движения
     //потомки должны перегрузить этот метод
-    protected virtual void EndMoveAction() { }
+    protected abstract void EndMoveAction();
 
     private void Start()
     {
