@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Linq;
+using UnityStandardAssets.ImageEffects;
 
 //Класс отвечающий за меню появляющееся после окончания игры
 public class GameOverMenuScript : MonoBehaviour
@@ -18,6 +19,8 @@ public class GameOverMenuScript : MonoBehaviour
     public Text scoreText;
     //название сцены с главным меню
     public string mainMenuSceneName = "MainMenuScene";
+    //ссылка на эффект размытия
+    public BlurOptimized blurEffect;
 
     //максимальное кол-во рекордов
     private const int maxHighscoresCount = 10;
@@ -37,6 +40,7 @@ public class GameOverMenuScript : MonoBehaviour
     {
         gameMenuRoot.SetActive(false);
         gameOverMenuRoot.SetActive(true);
+        blurEffect.enabled = true;
         if (pauseScript != null)
             pauseScript.enabled = false;
         scoreText.text = GameManagerScript.instance.scoreText.text;

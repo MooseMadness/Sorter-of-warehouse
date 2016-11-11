@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 
 //Класс реализующий управление персонажем
+[RequireComponent(typeof(Animator))]
 public class CharacterControlScript : CellObjectScript
 {
     //скорость движения (лево/право)
@@ -20,6 +21,8 @@ public class CharacterControlScript : CellObjectScript
         Stay
     }
 
+    //ссылка на компонент аниматор
+    private Animator animControl;
     //текущее движене
     private MoveType currMove = MoveType.Stay;
     //движение которое будет выполнено после завершения текущего
@@ -27,6 +30,11 @@ public class CharacterControlScript : CellObjectScript
     //клетка в которую будет выполнен переход после завершения текущего
     //(при условии что nextMove == MoveType.Move)
     private CellScript nextTarget;
+
+    private void Awake()
+    {
+        animControl = GetComponent<Animator>();
+    }
 
     private void Update()
     {
@@ -63,8 +71,7 @@ public class CharacterControlScript : CellObjectScript
                         //игрок не может толкать ящики в прыжке
                         if (nextTarget.cellObject == null)
                         {
-                            StartCoroutine(MoveToCell(nextTarget, moveSpeed));
-                            currMove = MoveType.Move;
+                            StartMove(nextTarget);
                         }
                         break;
                     }
@@ -128,8 +135,7 @@ public class CharacterControlScript : CellObjectScript
         {
             if (targetCell.cellObject == null)
             {
-                StartCoroutine(MoveToCell(targetCell, moveSpeed));
-                currMove = MoveType.Move;
+                StartMove(targetCell);
             }
             else //попытка толкнуть ящик влево
             {
@@ -138,8 +144,7 @@ public class CharacterControlScript : CellObjectScript
                 {
                     if (box.TryPush(targetDir, moveSpeed))
                     {
-                        StartCoroutine(MoveToCell(targetCell, moveSpeed));
-                        currMove = MoveType.Move;
+                        StartMove(targetCell);
                     }
                 }
                 else
@@ -168,5 +173,27 @@ public class CharacterControlScript : CellObjectScript
     protected override void EndMoveAction()
     {
         currMove = MoveType.Stay;
+        animControl.SetBool("move", false);
+    }
+
+    //начинает движение персонажа
+    private void StartMove(CellScript targetCell)
+    {
+        if((targetCell == currCell.leftNeighbor && transform.localScale.x > 0) ||
+            (targetCell == currCell.rightNeighbor && transform.localScale.x < 0))
+        {
+            Flip();
+        }
+        StartCoroutine(MoveToCell(targetCell, moveSpeed));
+        currMove = MoveType.Move;
+        animControl.SetBool("move", true);
+    }
+
+    //разворачивает персонажа в сторону противоположную текущей
+    private void Flip()
+    {
+        Vector3 newScale = transform.localScale;
+        newScale.x *= -1;
+        transform.localScale = newScale;
     }
 }

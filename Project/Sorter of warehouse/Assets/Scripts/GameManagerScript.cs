@@ -152,11 +152,13 @@ public class GameManagerScript : MonoBehaviour
             leftCraneCell.cellObject = crane;
         }
         crane.moveDirection = craneMoveDir;
-
+        crane.transform.position += crane.offset;
         crane.cellCount = cellToDrop;
 
         //создание нужного ящика
-        BoxScript box = ((GameObject)Instantiate(boxPrefabs[boxPrefabIndex], crane.transform.position, Quaternion.identity)).GetComponent<BoxScript>();
+        BoxScript box = ((GameObject)Instantiate(boxPrefabs[boxPrefabIndex], Vector3.zero, Quaternion.identity)).GetComponent<BoxScript>();
+        box.transform.SetParent(crane.transform);
+        box.transform.position = crane.currCell.transform.position + box.offset;
         crane.box = box;
         box.bonus = SpawnBonus();
         if (box.bonus != null)

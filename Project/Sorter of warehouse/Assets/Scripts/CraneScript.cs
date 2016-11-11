@@ -16,13 +16,7 @@ public class CraneScript : CellObjectScript
 
     private void Update()
     {        
-        if (moving)
-        {
-            //перемещение ящика вместе с краном
-            if (box != null)
-                box.transform.position = transform.position;
-        }
-        else
+        if(!moving)
         {
             //продолжение движения или начало уничтожения крана
             CellScript nextCell = moveDirection == MoveDirection.Left ? currCell.leftNeighbor : currCell.rightNeighbor;
@@ -61,6 +55,7 @@ public class CraneScript : CellObjectScript
         box.currCell = currCell;
         currCell.cellObject = box;
         box.canFall = true;
+        box.transform.SetParent(null);
         box = null;
     }
 
