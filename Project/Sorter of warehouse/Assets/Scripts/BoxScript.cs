@@ -225,7 +225,11 @@ public class BoxScript : CellObjectScript
         //игра заканчивается если игрок соприкосается с падающим ящиком
         if(coll.tag == playerTag && currMove == BoxMoveType.Fall)
         {
-            GameManagerScript.instance.GameOver();
+            CellObjectScript playerScript = coll.GetComponent<CellObjectScript>();
+            //игрок не умирает если стоит на падающем ящике 
+            //или выходит из под ящика в момент контакта
+            if (playerScript.currCell == currCell)
+                GameManagerScript.instance.GameOver();
         }
     }
 

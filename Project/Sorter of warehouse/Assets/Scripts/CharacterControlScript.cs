@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 
 //Класс реализующий управление персонажем
 [RequireComponent(typeof(Animator))]
@@ -195,5 +194,6 @@ public class CharacterControlScript : CellObjectScript
         Vector3 newScale = transform.localScale;
         newScale.x *= -1;
         transform.localScale = newScale;
+        offset.x *= -1;
     }
 }
