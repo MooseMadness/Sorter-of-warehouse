@@ -42,6 +42,9 @@ public class MainMenuScript : MonoBehaviour
     //а не при каждом переходе в сцену главного меню
     private static bool isInit = false;
 
+    //путь к папке с данными игры
+    private string dataDir;
+
     //клик по кнопке запуска игры
     public void OnStartGameClick()
     {
@@ -63,6 +66,7 @@ public class MainMenuScript : MonoBehaviour
 
     private void Awake()
     {
+        dataDir = Application.persistentDataPath;
         if (!isInit)
         {
             CheckDefaultName();
@@ -91,10 +95,10 @@ public class MainMenuScript : MonoBehaviour
     //попытка считать рекорды из файла
     private void ReadHighscoreFromFile()
     {
-        if (File.Exists("Data/highscore.dat"))
+        if (File.Exists(dataDir + "/highscore.dat"))
         {
             BinaryFormatter binFormatter = new BinaryFormatter();
-            using (FileStream dataFile = File.Open("Data/highscore.dat", FileMode.Open))
+            using (FileStream dataFile = File.Open(dataDir + "/highscore.dat", FileMode.Open))
             {
                 highscores = (List<HighscoreRecord>)binFormatter.Deserialize(dataFile);
             }
@@ -129,9 +133,7 @@ public class MainMenuScript : MonoBehaviour
     {
         PlayerPrefs.SetString("DefaultScoreName", defaultHighscoreName);
         BinaryFormatter binFormater = new BinaryFormatter();
-        if(!Directory.Exists("Data"))
-            Directory.CreateDirectory("Data");
-        using (FileStream dataFile = File.Open("Data/highscore.dat", FileMode.OpenOrCreate))
+        using (FileStream dataFile = File.Open(dataDir + "/highscore.dat", FileMode.OpenOrCreate))
         {
             binFormater.Serialize(dataFile, highscores);
         }
