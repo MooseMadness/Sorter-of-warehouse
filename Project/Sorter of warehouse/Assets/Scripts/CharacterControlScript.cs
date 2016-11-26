@@ -26,9 +26,8 @@ public class CharacterControlScript : CellObjectScript
     private MoveType currMove = MoveType.Stay;
     //движение которое будет выполнено после завершения текущего
     private MoveType nextMove = MoveType.Stay;
-    //клетка в которую будет выполнен переход после завершения текущего
-    //(при условии что nextMove == MoveType.Move)
-    private CellScript nextTarget;
+    //следующее направление движение
+    private MoveDirection nextDir;
 
     private void Awake()
     {
@@ -67,11 +66,7 @@ public class CharacterControlScript : CellObjectScript
 
                     case MoveType.Move:
                     {
-                        //игрок не может толкать ящики в прыжке
-                        if (nextTarget.cellObject == null)
-                        {
-                            StartMove(nextTarget);
-                        }
+                        Move(nextDir);
                         break;
                     }
                 }
@@ -118,11 +113,11 @@ public class CharacterControlScript : CellObjectScript
         }
         if (moving)
         {
-            //если во время прыжка поступит команда движение влево, то игрок сместится влево после прыжка
+            //если во время прыжка поступит команда движение , то игрок сместится влево после прыжка
             if (currMove == MoveType.Jump && targetCell != null)
             {
                 nextMove = MoveType.Move;
-                nextTarget = targetCell;
+                nextDir = targetDir;
             }
             //если во время движения поступила команда прыжка а затем команда движения, то прыжок отменится 
             else if (nextMove == MoveType.Jump)
@@ -136,7 +131,7 @@ public class CharacterControlScript : CellObjectScript
             {
                 StartMove(targetCell);
             }
-            else //попытка толкнуть ящик влево
+            else //попытка толкнуть ящик 
             {
                 BoxScript box = targetCell.cellObject as BoxScript;
                 if (box != null)
