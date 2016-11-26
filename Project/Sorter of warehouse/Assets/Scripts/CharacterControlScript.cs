@@ -195,5 +195,6 @@ public class CharacterControlScript : CellObjectScript
         newScale.x *= -1;
         transform.localScale = newScale;
         offset.x *= -1;
+        transform.position = currCell.transform.position + offset;
     }
 }
