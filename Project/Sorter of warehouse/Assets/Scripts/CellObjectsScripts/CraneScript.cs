@@ -55,7 +55,7 @@ public class CraneScript : CellObjectScript
         box.currCell = currCell;
         currCell.cellObject = box;
         box.canFall = true;
-        box.transform.SetParent(null);
+        box.transform.SetParent(transform.parent);
         box = null;
     }
 

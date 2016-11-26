@@ -69,21 +69,22 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\BonusScript.cs" />
-    <Compile Include="Assets\Scripts\BoxScript.cs" />
-    <Compile Include="Assets\Scripts\CellObjectScript.cs" />
-    <Compile Include="Assets\Scripts\CellScript.cs" />
+    <Compile Include="Assets\Scripts\BonusesScripts\BonusScript.cs" />
+    <Compile Include="Assets\Scripts\BonusesScripts\ExplosionBonusScript.cs" />
+    <Compile Include="Assets\Scripts\BonusesScripts\ScoreBonusScript.cs" />
+    <Compile Include="Assets\Scripts\BonusesScripts\SniperBonusExplosion.cs" />
+    <Compile Include="Assets\Scripts\CellObjectsScripts\BoxScript.cs" />
+    <Compile Include="Assets\Scripts\CellObjectsScripts\CellObjectScript.cs" />
+    <Compile Include="Assets\Scripts\CellObjectsScripts\CraneScript.cs" />
+    <Compile Include="Assets\Scripts\CellsScripts\CellScript.cs" />
+    <Compile Include="Assets\Scripts\CellsScripts\GameFieldScript.cs" />
     <Compile Include="Assets\Scripts\CharacterControlScript.cs" />
-    <Compile Include="Assets\Scripts\CraneScript.cs" />
     <Compile Include="Assets\Scripts\EnumsScript.cs" />
-    <Compile Include="Assets\Scripts\ExplosionBonusScript.cs" />
-    <Compile Include="Assets\Scripts\GameFieldScript.cs" />
+    <Compile Include="Assets\Scripts\FitScaleScript.cs" />
     <Compile Include="Assets\Scripts\GameManagerScript.cs" />
-    <Compile Include="Assets\Scripts\GameOverMenuScript.cs" />
-    <Compile Include="Assets\Scripts\MainMenuScript.cs" />
-    <Compile Include="Assets\Scripts\PauseScript.cs" />
-    <Compile Include="Assets\Scripts\ScoreBonusScript.cs" />
-    <Compile Include="Assets\Scripts\SniperBonusExplosion.cs" />
+    <Compile Include="Assets\Scripts\MenuScripts\GameOverMenuScript.cs" />
+    <Compile Include="Assets\Scripts\MenuScripts\MainMenuScript.cs" />
+    <Compile Include="Assets\Scripts\MenuScripts\PauseScript.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Standard Assets\Effects\GlassRefraction\Shaders\GlassStainedBumpDistort.shader" />

@@ -17,6 +17,20 @@ public class GameFieldScript : MonoBehaviour
     [SerializeField, HideInInspector]
     private CellScript[] cells;
 
+    //ссылка на объект данного класса в сцене 
+    public static GameFieldScript instance = null;
+
+    private void Awake()
+    {
+        if (instance == null)
+            instance = this;
+        else
+        {
+            Destroy(gameObject);
+            throw new UnityException("Не поддерживается больше 1-го экземпляра игрового поля");
+        }
+    }
+
     //индексатор позволяющий работать с 1-мерным массивом клеток
     //как с 2-мерным
     public CellScript this[int i, int j]

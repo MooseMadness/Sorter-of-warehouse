@@ -9,7 +9,7 @@ public abstract class BonusScript : MonoBehaviour
     //изображение бонуса
     public Sprite bonusGraphic;
 
-    protected virtual void Awake()
+    protected virtual void Start()
     {
         if (bonusProbability < 0 || bonusProbability > 1f)
         {

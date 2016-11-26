@@ -24,10 +24,10 @@ public class GameManagerScript : MonoBehaviour
     public float minSpawnTime;
     //скорость уменьшения времени между спавнами
     public float spawnTimeDecreaseSpeed;
-    //ширина игрового поля (в клетках)
-    public int gameFieldWidth;
     //массив используеммых боннусов
     public BonusScript[] bonuses;
+    //ссылка на корневой объект сцены
+    public Transform sceneRoot;
 
     //текущее кол-во очков
     public int score { get; private set; }
@@ -55,7 +55,7 @@ public class GameManagerScript : MonoBehaviour
         {
             throw new UnityException("Время между спавнами кранов не может быть отрицательным");
         }
-        if(gameFieldWidth <= 0)
+        if(GameFieldScript.instance.width <= 0)
         {
             throw new UnityException("Ширина игрового поля должна быть больше 0");
         }
@@ -133,7 +133,7 @@ public class GameManagerScript : MonoBehaviour
     //спавн крана
     private void SpawnCrane()
     {
-        int cellToDrop = Random.Range(1, gameFieldWidth + 1);
+        int cellToDrop = Random.Range(1, GameFieldScript.instance.width + 1);
         int boxPrefabIndex = Random.Range(0, boxPrefabs.Length);
         MoveDirection craneMoveDir = (MoveDirection)Random.Range(0, 2);
         CraneScript crane;
@@ -153,6 +153,7 @@ public class GameManagerScript : MonoBehaviour
         }
         crane.moveDirection = craneMoveDir;
         crane.transform.position += crane.offset;
+        crane.transform.SetParent(sceneRoot);
         crane.cellCount = cellToDrop;
 
         //создание нужного ящика

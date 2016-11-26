@@ -4,15 +4,12 @@
 //уничтожает все ящики того же цвета что и ящик в переданной ячейке
 public class SniperBonusExplosion : BonusScript
 {
-    //ссылка на скрипт игрового поля
-    public GameFieldScript gameField;
-
-    protected override void Awake()
+    protected override void Start()
     {
-        base.Awake();
-        if(gameField == null)
+        base.Start();
+        if(GameFieldScript.instance == null)
         {
-            throw new UnassignedReferenceException("Не установлена ссылка на игровое поле в объекте бонуса");
+            throw new UnassignedReferenceException("В сцене нет игрового поля");
         }
     }
 
@@ -25,11 +22,11 @@ public class SniperBonusExplosion : BonusScript
         }
         else
         {
-            for(int i = 0; i < gameField.height; i++)
+            for(int i = 0; i < GameFieldScript.instance.height; i++)
             {
-                for(int j = 0; j < gameField.width; j++)
+                for(int j = 0; j < GameFieldScript.instance.width; j++)
                 {
-                    BoxScript cellBox = gameField[i, j].cellObject as BoxScript;
+                    BoxScript cellBox = GameFieldScript.instance[i, j].cellObject as BoxScript;
                     if(cellBox != null && cellBox.boxColor == targetBox.boxColor)
                     {
                         cellBox.DestroyBox();
