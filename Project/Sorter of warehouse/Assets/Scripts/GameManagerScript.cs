@@ -10,9 +10,9 @@ public class GameManagerScript : MonoBehaviour
     public static GameManagerScript instance = null;
     //ссылка на текст для вывода очков
     public Text scoreText;
-    //ссылка на левую клетку для респавна кранов
+    //ссылка на левую клетку для спавна кранов
     public CellScript leftCraneCell;
-    //ссылка на правую клетку для респавна кранов
+    //ссылка на правую клетку для cпавна кранов
     public CellScript rightCraneCell;
     //ссылка на префаб крана
     public GameObject cranePrefab;
@@ -106,27 +106,21 @@ public class GameManagerScript : MonoBehaviour
     {
         score += amount;
         scoreText.text = "Score: " + score;
-    } 
+    }
 
     private void Update()
     {
         craneTimer += Time.deltaTime;
-        if (craneSpawnTime > minSpawnTime)
+        if (craneTimer >= craneSpawnTime)
         {
-            if(craneTimer >= craneSpawnTime)
+            SpawnCrane();
+            if (Mathf.Abs(craneSpawnTime - minSpawnTime) > float.Epsilon)
             {
-                SpawnCrane();
                 craneSpawnTime -= spawnTimeDecreaseSpeed;
-                craneTimer = 0;
+                if (craneSpawnTime < minSpawnTime)
+                    craneSpawnTime = minSpawnTime;
             }
-        }
-        else
-        {
-            if(craneTimer >= minSpawnTime)
-            {
-                SpawnCrane();
-                craneTimer = 0;
-            }
+            craneTimer = 0;
         }
     }
 

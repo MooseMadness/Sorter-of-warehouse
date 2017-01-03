@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-//Касс реализующий механику ящика:
+//Класс реализующий механику ящика:
 //- толкание и падение
 //- уничтожение при совпадении цвета
 public class BoxScript : CellObjectScript
@@ -56,33 +56,22 @@ public class BoxScript : CellObjectScript
         }
         else
         {
+            CellScript targetCell;
             if (dir == MoveDirection.Left)
+                targetCell = currCell.leftNeighbor;
+            else
+                targetCell = currCell.rightNeighbor;
+            //если сбоку и сверху нет ящика толчок разрешается
+            bool canPush = targetCell != null && targetCell.cellObject == null && currCell.topNeighbor.cellObject == null;
+            if (canPush)
             {
-                //если слева и сверху нет ящика толчок разрешается
-                if (currCell.leftNeighbor != null && currCell.leftNeighbor.cellObject == null && currCell.topNeighbor.cellObject == null)
-                {
-                    StartCoroutine(MoveToCell(currCell.leftNeighbor, moveSpeed));
-                    currMove = BoxMoveType.Push;
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                StartCoroutine(MoveToCell(targetCell, moveSpeed));
+                currMove = BoxMoveType.Push;
+                return true;
             }
             else
             {
-                //если справа и сверху нет ящика толчок разрешается
-                if (currCell.rightNeighbor != null && currCell.rightNeighbor.cellObject == null && currCell.topNeighbor.cellObject == null)
-                {
-                    StartCoroutine(MoveToCell(currCell.rightNeighbor, moveSpeed));
-                    currMove = BoxMoveType.Push;
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return false;
             }
         }
     }
@@ -90,7 +79,8 @@ public class BoxScript : CellObjectScript
     private void Update()
     {
         //падение если под ящиком ничего нет
-        if(canFall && !moving && currCell.bottomNeighbor != null && !(currCell.bottomNeighbor.cellObject is BoxScript))
+        bool needFall = canFall && !moving && currCell.bottomNeighbor != null && !(currCell.bottomNeighbor.cellObject is BoxScript);
+        if (needFall)
         {
             StartCoroutine(MoveToCell(currCell.bottomNeighbor, fallSpeed));
             currMove = BoxMoveType.Fall;
@@ -114,22 +104,23 @@ public class BoxScript : CellObjectScript
     protected override void EndMoveAction()
     {
         //конец игры если ящик упал в запретную клетку
-        if(currMove == BoxMoveType.Fall && currCell.isGameOverCell && currCell.bottomNeighbor.cellObject is BoxScript)
+        bool inGameOverCell = currMove == BoxMoveType.Fall && currCell.isGameOverCell && currCell.bottomNeighbor.cellObject is BoxScript;
+        if (inGameOverCell)
         {
             GameManagerScript.instance.GameOver();
             return;
         }
         currMove = BoxMoveType.Stay;
-        //проверка на совпадение цветов проводится если падение не будет прододжаться
+        //проверка на совпадение цветов проводится если падение не будет продолжаться
         if (currCell.bottomNeighbor == null || currCell.bottomNeighbor.cellObject is BoxScript)
         {
             int count = 0;
             //подсчёт ящиков с одинаковым цветом
-            FindBoxWithSameColor(currCell, (x) => count++);
+            FindBoxWithSameColor(currCell, x => count++);
             if (count >= 3)
             {
                 //уничтожение ящиков с одинаковым цветом
-                FindBoxWithSameColor(currCell, (x) => x.DestroyBox());
+                FindBoxWithSameColor(currCell, x => x.DestroyBox());
             }
         }
     }
@@ -187,14 +178,19 @@ public class BoxScript : CellObjectScript
                 passedCells = new List<CellScript>();
             }
             passedCells.Add(cell);
+
             if (CheckCell(cell.leftNeighbor, passedCells))
                 FindBoxWithSameColor(cell.leftNeighbor, action, passedCells);
+
             if (CheckCell(cell.rightNeighbor, passedCells))
                 FindBoxWithSameColor(cell.rightNeighbor, action, passedCells);
+
             if (CheckCell(cell.topNeighbor, passedCells))
                 FindBoxWithSameColor(cell.topNeighbor, action, passedCells);
+
             if (CheckCell(cell.bottomNeighbor, passedCells))
                 FindBoxWithSameColor(cell.bottomNeighbor, action, passedCells);
+
             action(box);
         }
     }

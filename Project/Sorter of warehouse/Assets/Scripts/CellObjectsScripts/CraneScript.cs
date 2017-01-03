@@ -26,18 +26,9 @@ public class CraneScript : CellObjectScript
             }
             else
             {
-                StartDestroy();
+                Destroy(gameObject);
             }
         }
-    }
-
-    //начало движения крана
-    public void StartMove()
-    {
-        if (moveDirection == MoveDirection.Left)
-            StartCoroutine(MoveToCell(currCell.leftNeighbor, moveSpeed));
-        else
-            StartCoroutine(MoveToCell(currCell.rightNeighbor, moveSpeed));
     }
 
     protected override void EndMoveAction()
@@ -57,12 +48,5 @@ public class CraneScript : CellObjectScript
         box.canFall = true;
         box.transform.SetParent(transform.parent);
         box = null;
-    }
-
-    //функция начинающее уничтожение крана
-    //в будующем будут добавлены нужные действия
-    private void StartDestroy()
-    {
-        Destroy(gameObject);
     }
 }

@@ -42,8 +42,8 @@ public class CharacterControlScript : CellObjectScript
             //чтобы избежать вызова корутины из самой себя (приведет к некорректному значению moving)
             if (nextMove == MoveType.Stay)
             {
-                //падение если под ногами ничего нет то игрок падает
-                if (currCell.bottomNeighbor != null && currCell.bottomNeighbor.cellObject == null)
+                //если под ногами ничего нет то игрок падает
+                if (!IsGrounded())
                 {
                     StartCoroutine(MoveToCell(currCell.bottomNeighbor, fallSpeed));
                     currMove = MoveType.Fall;
@@ -51,12 +51,12 @@ public class CharacterControlScript : CellObjectScript
             }
             else
             {
-                //выбор следующего движения если во время предыдущего была нажата кнопка
+                //выбор следующего движения, если во время предыдущего была нажата кнопка
                 switch (nextMove)
                 {
                     case MoveType.Jump:
                     {
-                        if (currCell.bottomNeighbor == null || currCell.bottomNeighbor.cellObject != null)
+                        if (IsGrounded())
                         {
                             StartCoroutine(MoveToCell(currCell.topNeighbor, jumpSpeed));
                             currMove = MoveType.Jump;
@@ -82,7 +82,7 @@ public class CharacterControlScript : CellObjectScript
         {
             if (!moving)
             {
-                if (currCell.bottomNeighbor == null || currCell.bottomNeighbor.cellObject != null)
+                if (IsGrounded())
                 {
                     StartCoroutine(MoveToCell(currCell.topNeighbor, jumpSpeed));
                     currMove = MoveType.Jump;
@@ -162,8 +162,7 @@ public class CharacterControlScript : CellObjectScript
     {
         Move(MoveDirection.Left);
     }
-
-    //в будующем здесь будет происходить переключение анимаций
+    
     protected override void EndMoveAction()
     {
         currMove = MoveType.Stay;
@@ -173,8 +172,8 @@ public class CharacterControlScript : CellObjectScript
     //начинает движение персонажа
     private void StartMove(CellScript targetCell)
     {
-        if((targetCell == currCell.leftNeighbor && transform.localScale.x > 0) ||
-            (targetCell == currCell.rightNeighbor && transform.localScale.x < 0))
+        bool needFlip = (targetCell == currCell.leftNeighbor && transform.localScale.x > 0) || (targetCell == currCell.rightNeighbor && transform.localScale.x < 0);
+        if (needFlip)
         {
             Flip();
         }
@@ -191,5 +190,12 @@ public class CharacterControlScript : CellObjectScript
         transform.localScale = newScale;
         offset.x *= -1;
         transform.position = currCell.transform.position + offset;
+    }
+
+    //истина - игрок стоит на полу или другом объекте
+    //иначе ложь
+    private bool IsGrounded()
+    {
+        return currCell.bottomNeighbor == null || currCell.bottomNeighbor.cellObject != null;
     }
 }

@@ -12,10 +12,10 @@ public struct HighscoreRecord
     public string name;
     public int score;
 
-    public HighscoreRecord(string _name, int _score)
+    public HighscoreRecord(string name, int score)
     {
-        name = _name;
-        score = _score;
+        this.name = name;
+        this.score = score;
     }
 }
 
@@ -30,7 +30,7 @@ public class MainMenuScript : MonoBehaviour
     public string gameSceneName = "GameScene";
     //ссылка на текст для вывода названий рекордов
     public Text scoreNamesText;
-    //ссылка на текст для вовда значений рекордов
+    //ссылка на текст для вывода значений рекордов
     public Text scoresText;
 
     //ссылка на массив рекордов
@@ -66,9 +66,9 @@ public class MainMenuScript : MonoBehaviour
 
     private void Awake()
     {
-        dataDir = Application.persistentDataPath;
         if (!isInit)
         {
+            dataDir = Application.persistentDataPath;
             CheckDefaultName();
             ReadHighscoreFromFile();
             isInit = true;

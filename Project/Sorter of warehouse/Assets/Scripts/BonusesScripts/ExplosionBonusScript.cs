@@ -6,20 +6,32 @@ public class ExplosionBonusScript : BonusScript
 {
     public override void UseBonus(CellScript targetCell)
     {
-        if(targetCell.cellObject is BoxScript)
+        if (targetCell.cellObject is BoxScript)
         {
-            if (targetCell.topNeighbor != null && targetCell.topNeighbor.cellObject is BoxScript)
-                ((BoxScript)targetCell.topNeighbor.cellObject).DestroyBox();
-            if (targetCell.bottomNeighbor != null && targetCell.bottomNeighbor.cellObject is BoxScript)
-                ((BoxScript)targetCell.bottomNeighbor.cellObject).DestroyBox();
-            if (targetCell.leftNeighbor != null && targetCell.leftNeighbor.cellObject is BoxScript)
-                ((BoxScript)targetCell.leftNeighbor.cellObject).DestroyBox();
-            if (targetCell.rightNeighbor != null && targetCell.rightNeighbor.cellObject is BoxScript)
-                ((BoxScript)targetCell.rightNeighbor.cellObject).DestroyBox();
+            CheckCell(targetCell.topNeighbor);
+            CheckCell(targetCell.bottomNeighbor);
+            CheckCell(targetCell.leftNeighbor);
+            CheckCell(targetCell.rightNeighbor);
         }
         else
         {
             throw new UnityException("Бонусу передана ссылка на клетку не содержащую ящика");
         }
+    }
+
+    //истина - яейка существует и в ней есть ящик
+    //иначе ложь
+    private bool HasBox(CellScript cell)
+    {
+        return cell != null && cell.cellObject is BoxScript;
+    }
+
+    //проверяет клетку на наличие в ней ящика
+    //если ящик есть, то он уничтожается
+    private void CheckCell(CellScript cell)
+    {
+        bool hasBox = cell != null && cell.cellObject is BoxScript;
+        if (hasBox)
+            ((BoxScript)cell.cellObject).DestroyBox();
     }
 }

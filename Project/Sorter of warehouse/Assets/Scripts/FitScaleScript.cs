@@ -12,6 +12,11 @@ public class FitScaleScript : MonoBehaviour
 
     private void Start()
     {
+        FitScale();
+    }
+
+    public void FitScale()
+    {
         float targetaspect = editorWidth / (float)editorHeight;
         float windowaspect = Screen.width / (float)Screen.height;
         float scaleWidth = windowaspect / targetaspect;
