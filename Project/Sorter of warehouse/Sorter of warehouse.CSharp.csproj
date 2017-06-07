@@ -85,6 +85,7 @@
     <Compile Include="Assets\Scripts\MenuScripts\GameOverMenuScript.cs" />
     <Compile Include="Assets\Scripts\MenuScripts\MainMenuScript.cs" />
     <Compile Include="Assets\Scripts\MenuScripts\PauseScript.cs" />
+    <Compile Include="Assets\Scripts\SelfDestroyScript.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Standard Assets\Effects\GlassRefraction\Shaders\GlassStainedBumpDistort.shader" />

@@ -4,6 +4,8 @@
 //уничтожает все ящики того же цвета что и ящик в переданной ячейке
 public class SniperBonusExplosion : BonusScript
 {
+    public GameObject sniperEffect;
+
     protected override void Start()
     {
         base.Start();
@@ -26,10 +28,12 @@ public class SniperBonusExplosion : BonusScript
             {
                 for(int j = 0; j < GameFieldScript.instance.width; j++)
                 {
-                    BoxScript cellBox = GameFieldScript.instance[i, j].cellObject as BoxScript;
+                    CellScript cell = GameFieldScript.instance[i, j];
+                    BoxScript cellBox = cell.cellObject as BoxScript;
                     if(cellBox != null && cellBox.boxColor == targetBox.boxColor)
                     {
                         cellBox.DestroyBox();
+                        Instantiate(sniperEffect, cell.transform.position, Quaternion.identity);
                     }
                 }
             }

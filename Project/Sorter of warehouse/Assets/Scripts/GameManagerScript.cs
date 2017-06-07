@@ -47,10 +47,8 @@ public class GameManagerScript : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        if(!CheckPrefabsType())
-        {
-            throw new UnityException("У префабов не найдены нужные компоненты");
-        }
+        CheckPrefabsType();
+        CheckBonusesProbs();
         if(craneSpawnTime < 0 || minSpawnTime < 0)
         {
             throw new UnityException("Время между спавнами кранов не может быть отрицательным");
@@ -61,8 +59,7 @@ public class GameManagerScript : MonoBehaviour
         }
         gameOverMenuScript = GetComponent<GameOverMenuScript>();
     }
-
-    //создаёт необходимые объекты бонусов
+    
     private void CheckBonusesProbs()
     {
         float sumProb = 0;
@@ -70,27 +67,24 @@ public class GameManagerScript : MonoBehaviour
         {
             sumProb += bonus.bonusProbability;
         }
-        if(sumProb > 1f)
+        if (sumProb > 1f)
         {
             throw new UnityException("Суммарная вероянтность появления бонуса не может быть больше 1");
         }
     }
 
     //проверяет на наличие у префабов необходимых компонентов
-    //true - все компоненты присутствуют
-    //false - у какого-либо префаба отсутствует нужный компонент
-    private bool CheckPrefabsType()
+    private void CheckPrefabsType()
     {
         CraneScript craneScript = cranePrefab.GetComponent<CraneScript>();
         if (craneScript == null)
-            return false;
-        foreach(GameObject boxPrefab in boxPrefabs)
+            throw new UnityException("У префабов не найдены нужные компоненты");
+        foreach (GameObject boxPrefab in boxPrefabs)
         {
             BoxScript boxScript = boxPrefab.GetComponent<BoxScript>();
             if (boxScript == null)
-                return false;
+                throw new UnityException("У префабов не найдены нужные компоненты");
         }
-        return true;
     }
 
     //вызывается когда игрок проиграл

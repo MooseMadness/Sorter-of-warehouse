@@ -1,4 +1,6 @@
-﻿//класс реализующий бонус, который добавляет очки при срабатывании
+﻿using UnityEngine;
+
+//класс реализующий бонус, который добавляет очки при срабатывании
 public class ScoreBonusScript : BonusScript
 {
     //кол-во добавляемых очков
@@ -6,6 +8,14 @@ public class ScoreBonusScript : BonusScript
 
     public override void UseBonus(CellScript targetCell)
     {
-        GameManagerScript.instance.ChangeScore(scoreAmount);
+        BoxScript box = targetCell.cellObject as BoxScript;
+        if (box != null)
+        {
+            box.boxScore += scoreAmount;
+        }
+        else
+        {
+            throw new UnityException("Бонусу передана ссылка на клетку не содержащую ящика");
+        }
     }
 }

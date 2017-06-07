@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 //Класс реализующий механику ящика:
 //- толкание и падение
@@ -34,6 +35,7 @@ public class BoxScript : CellObjectScript
     public float fallSpeed;
     //кол-во очков которое даётся за ящик
     public int boxScore;
+    public GameObject scoreEffect;
     //тег которым отмечен игрок
     public string playerTag = "Player";
     //бонус, который содержит ящик
@@ -94,9 +96,14 @@ public class BoxScript : CellObjectScript
         {
             destroyed = true;
             if (bonus != null)
+            {
                 bonus.UseBonus(currCell);
+            }
             currCell.cellObject = null;
             GameManagerScript.instance.ChangeScore(boxScore);
+            GameObject effect = (GameObject)Instantiate(scoreEffect, transform.position, Quaternion.identity);
+            Text effectText = effect.GetComponentInChildren<Text>();
+            effectText.text = "+" + boxScore;
             Destroy(gameObject);
         }
     }

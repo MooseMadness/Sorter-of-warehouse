@@ -4,26 +4,37 @@
 //к данному ящику, ящики
 public class ExplosionBonusScript : BonusScript
 {
+    public GameObject explosionPrefab;
+
     public override void UseBonus(CellScript targetCell)
     {
-        if (targetCell.cellObject is BoxScript)
+        BoxScript bonusBox = targetCell.cellObject as BoxScript;
+        if (bonusBox != null)
         {
+
             CheckCell(targetCell.topNeighbor);
+            if (targetCell.topNeighbor != null)
+            {
+                CheckCell(targetCell.topNeighbor.leftNeighbor);
+                CheckCell(targetCell.topNeighbor.rightNeighbor);
+            }
+
             CheckCell(targetCell.bottomNeighbor);
+            if (targetCell.bottomNeighbor != null)
+            {
+                CheckCell(targetCell.bottomNeighbor.leftNeighbor);
+                CheckCell(targetCell.bottomNeighbor.rightNeighbor);
+            }
+
             CheckCell(targetCell.leftNeighbor);
             CheckCell(targetCell.rightNeighbor);
+
+            Instantiate(explosionPrefab, targetCell.transform.position, Quaternion.identity);
         }
         else
         {
             throw new UnityException("Бонусу передана ссылка на клетку не содержащую ящика");
         }
-    }
-
-    //истина - яейка существует и в ней есть ящик
-    //иначе ложь
-    private bool HasBox(CellScript cell)
-    {
-        return cell != null && cell.cellObject is BoxScript;
     }
 
     //проверяет клетку на наличие в ней ящика
